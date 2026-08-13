@@ -14,6 +14,7 @@ export function App() {
   const [activeView, setActiveView] = useState<'home' | 'venue-detail' | 'admin'>('home');
   const [activeCategory, setActiveCategory] = useState<Category | 'All'>('All');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCity, setSelectedCity] = useState<string>('Barcha shaharlar');
   const [venues, setVenues] = useState<Venue[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [selectedVenue, setSelectedVenue] = useState<Venue | null>(null);
@@ -33,14 +34,15 @@ export function App() {
   }, []);
 
   const displayedVenues = venues.filter((v) => {
-    if (!searchQuery.trim()) return true;
-    const q = searchQuery.toLowerCase();
-    return (
-      v.name.toLowerCase().includes(q) ||
-      v.category.toLowerCase().includes(q) ||
-      v.city.toLowerCase().includes(q) ||
-      v.location.toLowerCase().includes(q)
-    );
+    const matchesCategory = activeCategory === 'All' || v.category === activeCategory;
+    const matchesCity = selectedCity === 'Barcha shaharlar' || v.city === selectedCity;
+    const matchesSearch =
+      !searchQuery.trim() ||
+      v.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      v.location.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesCity && matchesSearch;
   });
 
   const pendingCount = bookings.filter((b) => b.status === 'pending').length;
@@ -74,13 +76,15 @@ export function App() {
             setSearchQuery(q);
             if (activeView !== 'home') setActiveView('home');
           }}
+          selectedCity={selectedCity}
+          onCityChange={setSelectedCity}
           onOpenAdmin={() => setActiveView('admin')}
           onOpenVouchers={() => setIsVouchersOpen(true)}
           pendingCount={pendingCount}
         />
 
         {/* Main Content Area */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
           {activeView === 'home' && (
             <HomePage
               venues={displayedVenues}

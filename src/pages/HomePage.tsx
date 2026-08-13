@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Category, Venue } from '../types';
 import { CategoryFilter } from '../components/CategoryFilter';
-import { MapPin, Star, Sparkles, ChevronRight, ShieldCheck, Zap, ArrowUpRight } from 'lucide-react';
+import { MapPin, Star, Sparkles, ChevronRight, ShieldCheck, Zap, ArrowUpRight, Trophy, Hotel as HotelIcon, Scissors, Gamepad2, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
 
 interface HomePageProps {
   venues: Venue[];
@@ -34,8 +34,17 @@ export const HomePage: React.FC<HomePageProps> = ({
     return 0;
   });
 
+  const getCategoryIcon = (category: Category) => {
+    switch (category) {
+      case 'Stadion': return <Trophy className="w-3.5 h-3.5" />;
+      case 'Hotel': return <HotelIcon className="w-3.5 h-3.5" />;
+      case 'Barber': return <Scissors className="w-3.5 h-3.5" />;
+      case 'PS Club': return <Gamepad2 className="w-3.5 h-3.5" />;
+    }
+  };
+
   return (
-    <div className="space-y-10 pb-16 animate-fade-in">
+    <div className="space-y-10 pb-20 animate-fade-in">
       
       {/* Premium Hero Banner */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 p-6 sm:p-10 lg:p-12 shadow-2xl glow-emerald">
@@ -63,15 +72,15 @@ export const HomePage: React.FC<HomePageProps> = ({
           {/* Quick stats pills */}
           <div className="pt-3 flex flex-wrap items-center gap-3 text-xs font-extrabold text-slate-200">
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
-              <span className="text-emerald-400 text-base">⚽</span>
+              <Trophy className="w-4 h-4 text-emerald-400" />
               <span>100+ Stadionlar</span>
             </div>
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
-              <span className="text-emerald-400 text-base">🏨</span>
+              <HotelIcon className="w-4 h-4 text-emerald-400" />
               <span>50+ Mehmonxonalar</span>
             </div>
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
-              <span className="text-emerald-400 text-base">💈</span>
+              <Scissors className="w-4 h-4 text-emerald-400" />
               <span>Barber & PS Klublar</span>
             </div>
             <div className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/10 px-3.5 py-2 rounded-2xl border border-emerald-500/20">
@@ -92,28 +101,34 @@ export const HomePage: React.FC<HomePageProps> = ({
 
           {/* Secondary Controls: City & Sort */}
           <div className="flex items-center gap-2.5 w-full lg:w-auto overflow-x-auto">
-            <select
-              value={selectedCity}
-              onChange={(e) => setSelectedCity(e.target.value)}
-              className="px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-sm"
-            >
-              {CITIES.map((city) => (
-                <option key={city} value={city}>
-                  📍 {city}
-                </option>
-              ))}
-            </select>
+            <div className="flex items-center gap-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-xs font-bold text-slate-400">
+              <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+              <select
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+                className="bg-transparent text-slate-200 focus:outline-none cursor-pointer font-bold"
+              >
+                {CITIES.map((city) => (
+                  <option key={city} value={city} className="bg-slate-900 text-slate-200">
+                    {city}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <select
-              value={sortBy}
-              onChange={(e: any) => setSortBy(e.target.value)}
-              className="px-4 py-2.5 bg-slate-900 border border-slate-800 rounded-2xl text-xs font-bold text-slate-200 focus:outline-none focus:border-emerald-500 cursor-pointer shadow-sm"
-            >
-              <option value="recommended">✨ Tavsiya etilganlar</option>
-              <option value="price_low">💰 Narx: Arzondan qimmatga</option>
-              <option value="price_high">💎 Narx: Qimmatdan arzonga</option>
-              <option value="rating">⭐ Reyting bo'yicha</option>
-            </select>
+            <div className="flex items-center gap-1 px-3 py-2 bg-slate-900 border border-slate-800 rounded-2xl text-xs font-bold text-slate-400">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-emerald-400" />
+              <select
+                value={sortBy}
+                onChange={(e: any) => setSortBy(e.target.value)}
+                className="bg-transparent text-slate-200 focus:outline-none cursor-pointer font-bold"
+              >
+                <option value="recommended" className="bg-slate-900 text-slate-200">Tavsiya etilganlar</option>
+                <option value="price_low" className="bg-slate-900 text-slate-200">Narx: Arzondan qimmatga</option>
+                <option value="price_high" className="bg-slate-900 text-slate-200">Narx: Qimmatdan arzonga</option>
+                <option value="rating" className="bg-slate-900 text-slate-200">Reyting bo'yicha</option>
+              </select>
+            </div>
           </div>
         </div>
       </section>
@@ -158,16 +173,15 @@ export const HomePage: React.FC<HomePageProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-90"></div>
 
                     {/* Category Badge */}
-                    <span className="absolute top-3 left-3 px-3 py-1 bg-slate-950/85 backdrop-blur-md text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-black shadow-md">
-                      {venue.category === 'Stadion' && '⚽ Stadion'}
-                      {venue.category === 'Hotel' && '🏨 Mehmonxona'}
-                      {venue.category === 'Barber' && '💈 Sartaroshxona'}
-                      {venue.category === 'PS Club' && '🎮 PS Klub'}
+                    <span className="absolute top-3 left-3 px-3 py-1 bg-slate-950/85 backdrop-blur-md text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-black shadow-md flex items-center gap-1.5">
+                      {getCategoryIcon(venue.category)}
+                      <span>{venue.category}</span>
                     </span>
 
                     {/* Rating Badge */}
                     <span className="absolute top-3 right-3 px-2.5 py-1 bg-slate-950/85 backdrop-blur-md text-amber-400 border border-amber-500/30 rounded-full text-xs font-extrabold flex items-center gap-1">
-                      ⭐ {venue.rating}
+                      <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+                      <span>{venue.rating}</span>
                     </span>
 
                     {/* City & Location label */}
@@ -192,9 +206,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                       {venue.features.slice(0, 3).map((feat, idx) => (
                         <span
                           key={idx}
-                          className="text-[10px] font-semibold bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded-lg border border-slate-700/60"
+                          className="text-[10px] font-semibold bg-slate-800/80 text-slate-300 px-2 py-0.5 rounded-lg border border-slate-700/60 flex items-center gap-1"
                         >
-                          ✓ {feat}
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          <span>{feat}</span>
                         </span>
                       ))}
                     </div>

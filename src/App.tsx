@@ -3,6 +3,7 @@ import { Category, Venue, Booking } from './types';
 import { getVenues, getBookings } from './lib/supabase';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
+import { BottomNav } from './components/BottomNav';
 import { HomePage } from './pages/HomePage';
 import { VenueDetailPage } from './pages/VenueDetailPage';
 import { AdminPage } from './pages/AdminPage';
@@ -59,7 +60,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-slate-950 pb-16 md:pb-0">
       <div>
         {/* Header */}
         <Header
@@ -106,6 +107,15 @@ export function App() {
           )}
         </main>
       </div>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <BottomNav
+        activeView={activeView}
+        onNavigateHome={() => setActiveView('home')}
+        onOpenVouchers={() => setIsVouchersOpen(true)}
+        onOpenAdmin={() => setActiveView('admin')}
+        pendingCount={pendingCount}
+      />
 
       {/* Booking Modal */}
       {bookingVenue && (

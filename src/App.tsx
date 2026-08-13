@@ -31,7 +31,6 @@ export function App() {
     refreshData();
   }, []);
 
-  // Filter venues by search query if typed
   const displayedVenues = venues.filter((v) => {
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
@@ -100,7 +99,10 @@ export function App() {
           )}
 
           {activeView === 'admin' && (
-            <AdminPage onBackToClient={() => setActiveView('home')} />
+            <AdminPage
+              onBackToClient={() => setActiveView('home')}
+              onVenuesUpdated={refreshData}
+            />
           )}
         </main>
       </div>

@@ -171,10 +171,8 @@ export const INITIAL_VENUES: Venue[] = [
   }
 ];
 
-/**
- * LocalStorage zaxira yordamchilari
- */
 const STORAGE_KEY_BOOKINGS = 'gaplashib_qoydim_bookings';
+const STORAGE_KEY_CUSTOM_VENUES = 'gaplashib_qoydim_custom_venues';
 
 export function getLocalBookings(): Booking[] {
   try {
@@ -191,19 +189,115 @@ export function saveLocalBooking(booking: Booking) {
   localStorage.setItem(STORAGE_KEY_BOOKINGS, JSON.stringify(updated));
 }
 
+export function getLocalCustomVenues(): Venue[] {
+  try {
+    const data = localStorage.getItem(STORAGE_KEY_CUSTOM_VENUES);
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+export function saveLocalCustomVenue(venue: Venue) {
+  const current = getLocalCustomVenues();
+  const updated = [venue, ...current.filter(v => v.id !== venue.id)];
+  localStorage.setItem(STORAGE_KEY_CUSTOM_VENUES, JSON.stringify(updated));
+}
+
+export function deleteLocalCustomVenue(id: string) {
+  const current = getLocalCustomVenues();
+  const updated = current.filter(v => v.id !== id);
+  localStorage.setItem(STORAGE_KEY_CUSTOM_VENUES, JSON.stringify(updated));
+}
+
 /**
  * Supabase va LocalStorage orqali Joylarni olish
  */
 export async function getVenues(): Promise<Venue[]> {
+  const customVenues = getLocalCustomVenues();
   try {
     const { data, error } = await supabase.from('venues').select('*');
-    if (error || !data || data.length === 0) {
-      return INITIAL_VENUES;
+    if (!error && data && data.length > 0) {
+      // Merge unique
+      const dbVenues = data as Venue[];
+      const combined = [...dbVenues];
+      customVenues.forEach(cv => {
+        if (!combined.some(v => v.id === cv.id)) combined.unshift(cv);
+      });
+      return combined;
     }
-    return data as Venue[];
   } catch (e) {
-    return INITIAL_VENUES;
+    console.warn('Supabase getVenues failed, using initial + local custom:', e);
   }
+
+  return [...customVenues, ...INITIAL_VENUES];
+}
+
+/**
+ * Yangi Joy / Biznes qo'shish (Admin uchun)
+ */
+export async function addVenue(venueData: Omit<Venue, 'id'>): Promise<Venue> {
+  const newVenue: Venue = {
+    ...venueData,
+    id: `venue-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+  };
+
+  saveLocalCustomVenue(newVenue);
+
+  try {
+    const { data, error } = await supabase.from('venues').insert([newVenue]).select().single();
+    if (!error && data) {
+      return data as Venue;
+    }
+  } catch (e) {
+    console.warn('Supabase addVenue fallback:', e);
+  }
+
+  return newVenue;
+}
+
+/**
+ * Joyni tahrirlash (Admin)
+ */
+export async function updateVenue(id: string, venueData: Partial<Venue>): Promise<Venue | null> {
+  const localList = getLocalCustomVenues();
+  const target = localList.find(v => v.id === id);
+  if (target) {
+    Object.assign(target, venueData);
+    saveLocalCustomVenue(target);
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('venues')
+      .update(venueData)
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (!error && data) {
+      return data as Venue;
+    }
+  } catch (e) {
+    console.warn('Supabase updateVenue fallback:', e);
+  }
+
+  return target || null;
+}
+
+/**
+ * Joyni o'chirish (Admin)
+ */
+export async function deleteVenue(id: string): Promise<boolean> {
+  deleteLocalCustomVenue(id);
+
+  try {
+    await supabase.from('venues').delete().eq('id', id);
+  } catch (e) {
+    console.warn('Supabase deleteVenue fallback:', e);
+  }
+
+  return true;
 }
 
 /**
@@ -219,10 +313,8 @@ export async function createBooking(booking: Omit<Booking, 'id' | 'created_at' |
     created_at: new Date().toISOString(),
   };
 
-  // 1. LocalStorage zaxirasi
   saveLocalBooking(newBooking);
 
-  // 2. Supabase
   try {
     const { data, error } = await supabase.from('bookings').insert([newBooking]).select().single();
     if (!error && data) {
@@ -264,7 +356,6 @@ export async function updateBookingStatus(
   const booking_status = isApproved ? 'confirmed' : 'cancelled';
   const payment_status = isApproved ? 'paid' : 'rejected';
 
-  // 1. LocalStorage update
   const localList = getLocalBookings();
   const target = localList.find(b => b.id === bookingId);
   if (target) {
@@ -276,7 +367,6 @@ export async function updateBookingStatus(
     saveLocalBooking(target);
   }
 
-  // 2. Supabase update
   try {
     const updatePayload: any = {
       status,

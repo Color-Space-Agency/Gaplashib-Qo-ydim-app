@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Category, Venue } from '../types';
 import { CategoryFilter } from '../components/CategoryFilter';
-import { MapPin, Star, Sparkles, ChevronRight, ShieldCheck, Zap, ArrowUpRight, Trophy, Hotel as HotelIcon, Scissors, Gamepad2, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
+import { MapPin, Star, Sparkles, ChevronRight, Zap, ArrowUpRight, Trophy, Hotel as HotelIcon, Scissors, Gamepad2, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
 
 interface HomePageProps {
   venues: Venue[];
@@ -11,7 +11,7 @@ interface HomePageProps {
   onSelectCategory: (cat: Category | 'All') => void;
 }
 
-const CITIES = ['Barcha shaharlar', 'Toshkent', 'Samarqand', 'Buxoro', 'Namangan', 'Andijon', "Farg'ona"];
+const CITIES = ['Barcha shaharlar', 'Toshkent', 'Samarqand', 'Buxoro', 'Andijon', "Farg‘ona"];
 
 export const HomePage: React.FC<HomePageProps> = ({
   venues,
@@ -44,48 +44,48 @@ export const HomePage: React.FC<HomePageProps> = ({
   };
 
   return (
-    <div className="space-y-10 pb-20 animate-fade-in">
+    <div className="space-y-8 pb-20 animate-fade-in">
       
-      {/* Premium Hero Banner */}
+      {/* Target Site Exact Hero Banner */}
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-800/80 p-6 sm:p-10 lg:p-12 shadow-2xl glow-emerald">
         {/* Glow Spheres */}
         <div className="absolute top-0 right-0 -translate-y-12 translate-x-12 w-96 h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="relative z-10 max-w-3xl space-y-5">
+        <div className="relative z-10 max-w-3xl space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 text-xs font-extrabold tracking-wide shadow-sm">
             <Sparkles className="w-4 h-4 text-emerald-400" />
-            <span>O'zbekistondagi #1 Onlayn Band Qilish Platformasi</span>
+            <span>Gaplashib Qo'ydim — Onlayn joy band qilish platformasi</span>
           </div>
 
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
-            Stadion, Mehmonxona va PS Klubini{' '}
+            Joy band qiling —{' '}
             <span className="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">
-              "Gaplashib Qo'ying"!
+              tez va oson
             </span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-normal">
-            Qulay vaqtni bir necha soniyada tanlang, to'lov chekini yuklang va Telegram botingizga rasmiy tasdiqlangan <b>Voucher ID</b> qabul qiling.
+          <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-2xl font-medium">
+            Stadion, hotel, barber, PS club va boshqalarni onlayn band qiling. Vaqt tanlang, to'lov qiling, tasdiqlang.
           </p>
 
           {/* Quick stats pills */}
-          <div className="pt-3 flex flex-wrap items-center gap-3 text-xs font-extrabold text-slate-200">
+          <div className="pt-2 flex flex-wrap items-center gap-3 text-xs font-extrabold text-slate-200">
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
               <Trophy className="w-4 h-4 text-emerald-400" />
-              <span>100+ Stadionlar</span>
+              <span>⚽ 100+ Stadionlar</span>
             </div>
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
               <HotelIcon className="w-4 h-4 text-emerald-400" />
-              <span>50+ Mehmonxonalar</span>
+              <span>🏨 50+ Mehmonxonalar</span>
             </div>
             <div className="flex items-center gap-2 bg-slate-800/90 px-4 py-2 rounded-2xl border border-slate-700/80 shadow-md">
               <Scissors className="w-4 h-4 text-emerald-400" />
-              <span>Barber & PS Klublar</span>
+              <span>💈 Barber & PS Klublar</span>
             </div>
             <div className="flex items-center gap-1.5 text-emerald-400 bg-emerald-500/10 px-3.5 py-2 rounded-2xl border border-emerald-500/20">
               <Zap className="w-4 h-4" />
-              <span>Instant Telegram Voucher</span>
+              <span>Telegram Bot API Verified</span>
             </div>
           </div>
         </div>
@@ -123,10 +123,10 @@ export const HomePage: React.FC<HomePageProps> = ({
                 onChange={(e: any) => setSortBy(e.target.value)}
                 className="bg-transparent text-slate-200 focus:outline-none cursor-pointer font-bold"
               >
-                <option value="recommended" className="bg-slate-900 text-slate-200">Tavsiya etilganlar</option>
-                <option value="price_low" className="bg-slate-900 text-slate-200">Narx: Arzondan qimmatga</option>
-                <option value="price_high" className="bg-slate-900 text-slate-200">Narx: Qimmatdan arzonga</option>
-                <option value="rating" className="bg-slate-900 text-slate-200">Reyting bo'yicha</option>
+                <option value="recommended" className="bg-slate-900 text-slate-200">✨ Tavsiya etilganlar</option>
+                <option value="price_low" className="bg-slate-900 text-slate-200">💰 Narx: Arzondan qimmatga</option>
+                <option value="price_high" className="bg-slate-900 text-slate-200">💎 Narx: Qimmatdan arzonga</option>
+                <option value="rating" className="bg-slate-900 text-slate-200">⭐ Reyting bo'yicha</option>
               </select>
             </div>
           </div>
